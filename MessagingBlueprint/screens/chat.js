@@ -9,23 +9,23 @@ import {
   InteractionManager,
 } from 'react-native';
 import {
-  RkButton,
-  RkText,
-  RkTextInput,
-  RkAvoidKeyboard,
-  RkStyleSheet,
-  RkTheme,
+  Button,
+  Text,
+  Input,
+  Avatar,
+  withStyles,
 } from 'react-native-ui-kitten';
 import _ from 'lodash';
-import { FontAwesome } from '../../assets/icons';
-import { data } from '../../data';
-import { Avatar } from '../../components/avatar';
-import { scale } from '../../utils/scale';
-import NavigationType from '../../config/navigation/propTypes';
+import { FontAwesome } from '../../../assets/icons';
+import { data } from '../../../data';
+import { scale } from '../../../utils/scale';
+import NavigationType from '../../../config/navigation/propTypes';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+// import Icon from "react-native-vector-icons/FontAwesome5";
 
 const moment = require('moment');
 
-export class Chat extends React.Component {
+export class _Chat extends React.Component {
   static propTypes = {
     navigation: NavigationType.isRequired,
   };
@@ -33,8 +33,9 @@ export class Chat extends React.Component {
     const userId = navigation.state.params ? navigation.state.params.userId : undefined;
     const user = data.getUser(userId);
     return ({
-      headerTitle: Chat.renderNavigationTitle(navigation, user),
-      headerRight: Chat.renderNavigationAvatar(navigation, user),
+      headerTitle: _Chat.renderNavigationTitle(navigation, user),
+      headerRight: _Chat.renderNavigationAvatar(navigation, user),
+      
     });
   };
 
@@ -90,78 +91,83 @@ export class Chat extends React.Component {
   };
 
   static renderNavigationTitle = (navigation, user) => (
-    <TouchableOpacity onPress={() => Chat.onNavigationTitlePressed(navigation, user)}>
-      <View style={styles.header}>
-        <RkText rkType='header5'>{`${user.firstName} ${user.lastName}`}</RkText>
-        <RkText rkType='secondary3 secondaryColor'>Online</RkText>
+    <TouchableOpacity onPress={() => _Chat.onNavigationTitlePressed(navigation, user)}>
+      <View style={{alignItems: 'center'}}>
+        <Text category='s1' style={{color: 'black'}}>{`${user.firstName} ${user.lastName}`}</Text>
+        <Text category='c1' style={{color: 'grey'}}>Online</Text>
       </View>
     </TouchableOpacity>
   );
 
   static renderNavigationAvatar = (navigation, user) => (
-    <TouchableOpacity onPress={() => Chat.onNavigationAvatarPressed(navigation, user)}>
-      <Avatar style={styles.avatar} rkType='small' img={user.photo} />
+    <TouchableOpacity onPress={() => _Chat.onNavigationAvatarPressed(navigation, user)}>
+      <Avatar source={user.photo} size='small' style={{marginRight: 16}}/>
     </TouchableOpacity>
   );
 
   renderDate = (date) => (
-    <RkText style={styles.time} rkType='secondary7 hintColor'>
+    <Text style={this.props.themedStyle.time} category='c2' appearance='hint'>
       {moment().add(date, 'seconds').format('LT')}
-    </RkText>
+    </Text>
   );
 
   renderItem = ({ item }) => {
     const isIncoming = item.type === 'in';
     const backgroundColor = isIncoming
-      ? RkTheme.current.colors.chat.messageInBackground
-      : RkTheme.current.colors.chat.messageOutBackground;
-    const itemStyle = isIncoming ? styles.itemIn : styles.itemOut;
+      ? this.props.themedStyle.messageInBackground
+      : this.props.themedStyle.messageOutBackground;
+    const itemStyle = isIncoming ? this.props.themedStyle.itemIn : this.props.themedStyle.itemOut;
 
     return (
-      <View style={[styles.item, itemStyle]}>
+      <View style={[this.props.themedStyle.item, itemStyle]}>
         {!isIncoming && this.renderDate(item.time)}
-        <View style={[styles.balloon, { backgroundColor }]}>
-          <RkText rkType='primary2 mediumLine chat' style={{ paddingTop: 5 }}>{item.text}</RkText>
+        <View style={[this.props.themedStyle.balloon, backgroundColor]}>
+          <Text category='p1' style={this.props.themedStyle.text} style={[{ paddingTop: 5 }, this.props.themedStyle.text]}>{item.text}</Text>
         </View>
         {isIncoming && this.renderDate(item.time)}
       </View>
     );
   };
 
-  render = () => (
-    <RkAvoidKeyboard
-      style={styles.container}
+  render = () => {
+    console.log('Chat Render', '');
+
+    // return <Text />
+    return(
+    <KeyboardAwareScrollView
+      style={this.props.themedStyle.container}
       onResponderRelease={Keyboard.dismiss}>
       <FlatList
         ref={this.setListRef}
         extraData={this.state}
-        style={styles.list}
+        style={this.props.themedStyle.list}
         data={this.state.data.messages}
         keyExtractor={this.extractItemKey}
         renderItem={this.renderItem}
       />
-      <View style={styles.footer}>
-        <RkButton style={styles.plus} rkType='clear'>
-          <RkText rkType='awesome secondaryColor'>{FontAwesome.plus}</RkText>
-        </RkButton>
-        <RkTextInput
+      <View style={this.props.themedStyle.footer}>
+        <TouchableOpacity style={this.props.themedStyle.plus}>
+        <Text category='h1' status='success'>+</Text>
+        </TouchableOpacity>
+        <Input
           onFocus={this.scrollToEnd}
           onBlur={this.scrollToEnd}
           onChangeText={this.onInputChanged}
           value={this.state.message}
-          rkType='row sticker'
           placeholder="Add a comment..."
-        />
-        <RkButton onPress={this.onSendButtonPressed} style={styles.send} rkType='circle highlight'>
-          <Image source={require('../../assets/icons/sendIcon.png')} />
-        </RkButton>
-      </View>
-    </RkAvoidKeyboard>
+          style={this.props.themedStyle.input}
 
-  )
+        />
+        <TouchableOpacity onPress={this.onSendButtonPressed} style={this.props.themedStyle.send} >
+          <Image source={require('../../../assets/icons/sendIcon.png')} />
+        </TouchableOpacity>
+      </View>
+    </KeyboardAwareScrollView>
+
+  )}
 }
 
-const styles = RkStyleSheet.create(theme => ({
+export default Chat = withStyles(_Chat, theme => ({
   header: {
     alignItems: 'center',
   },
@@ -170,7 +176,7 @@ const styles = RkStyleSheet.create(theme => ({
   },
   container: {
     flex: 1,
-    backgroundColor: theme.colors.screen.base,
+    backgroundColor: theme['color-basic-100'],
   },
   list: {
     paddingHorizontal: 17,
@@ -179,7 +185,9 @@ const styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
     minHeight: 60,
     padding: 10,
-    backgroundColor: theme.colors.screen.alter,
+    backgroundColor: theme['color-basic-300'],
+    alignItems: 'center',
+
   },
   item: {
     marginVertical: 14,
@@ -210,5 +218,26 @@ const styles = RkStyleSheet.create(theme => ({
     width: 40,
     height: 40,
     marginLeft: 10,
+    borderColor: theme["color-danger-400"],
+    backgroundColor: theme["color-danger-400"],
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+  },
+  messageInBackground: {
+    backgroundColor: theme['color-basic-300']
+  },
+  messageOutBackground: {
+    backgroundColor: theme['color-basic-500']
+  },
+  text: {
+    color: theme['color-basic-1000']
+  },
+  input: {
+    backgroundColor: theme['color-basic-100'],
+    borderColor: theme['color-basic-400'],
+    borderRadius: 25,
+    flex: 1
   },
 }));

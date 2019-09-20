@@ -6,21 +6,22 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {
-  RkStyleSheet,
-  RkText,
+  withStyles,
+  Text,
+  Avatar
 } from 'react-native-ui-kitten';
-import { Avatar } from '../../components';
-import { data } from '../../data';
-import NavigationType from '../../config/navigation/propTypes';
+import { data } from '../../../data';
+import NavigationType from '../../../config/navigation/propTypes';
 
 const moment = require('moment');
 
-export class Comments extends React.Component {
+export class _Comments extends React.Component {
   static propTypes = {
     navigation: NavigationType.isRequired,
   };
   static navigationOptions = {
     title: 'Comments'.toUpperCase(),
+    
   };
 
   constructor(props) {
@@ -33,47 +34,49 @@ export class Comments extends React.Component {
 
   extractItemKey = (item) => `${item.id}`;
 
-  onItemPressed = (item) => {
-    const navigationParams = { id: item.user.id };
-    this.props.navigation.navigate('ProfileV1', navigationParams);
-  };
+
 
   renderSeparator = () => (
-    <View style={styles.separator} />
+    <View style={this.props.themedStyle.separator} />
   );
 
-  renderItem = ({ item }) => (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => this.onItemPressed(item)}>
-        <Avatar rkType='circle' style={styles.avatar} img={item.user.photo} />
+  renderItem = ({ item }) => {
+    const user = data.getUser(item.userId)
+    return(
+    <View style={this.props.themedStyle.container}>
+      <TouchableOpacity >
+        <Avatar source={user.photo} size='giant' style={this.props.themedStyle.avatar}/>
       </TouchableOpacity>
-      <View style={styles.content}>
-        <View style={styles.contentHeader}>
-          <RkText rkType='header5'>{`${item.user.firstName} ${item.user.lastName}`}</RkText>
-          <RkText rkType='secondary4 hintColor'>
+      <View style={this.props.themedStyle.content}>
+        <View style={this.props.themedStyle.contentHeader}>
+          <Text category='s1' style={this.props.themedStyle.text}>{`${user.firstName} ${user.lastName}`}</Text>
+          <Text category='c1' appearance='hint' style={this.props.themedStyle.textTime}>
             {moment().add(item.time, 'seconds').format('LT')}
-          </RkText>
+          </Text>
         </View>
-        <RkText rkType='primary3 mediumLine'>{item.text}</RkText>
+        <Text category='p2'  style={this.props.themedStyle.text}>{item.text}</Text>
       </View>
     </View>
-  );
+  )};
 
-  render = () => (
+  render = () => {
+   
+
+    return (
     <FlatList
-      style={styles.root}
+      style={this.props.themedStyle.root}
       data={this.state.data}
       extraData={this.state}
       ItemSeparatorComponent={this.renderSeparator}
       keyExtractor={this.extractItemKey}
       renderItem={this.renderItem}
     />
-  );
+  )};
 }
 
-const styles = RkStyleSheet.create(theme => ({
+export default Comments = withStyles(_Comments, theme => ({
   root: {
-    backgroundColor: theme.colors.screen.base,
+    backgroundColor: theme['color-basic-100'],
   },
   container: {
     paddingLeft: 19,
@@ -93,6 +96,13 @@ const styles = RkStyleSheet.create(theme => ({
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: theme.colors.border.base,
+    backgroundColor: theme['color-basic-400'],
   },
+  text: {
+    color: theme['color-basic-1000']
+  },
+  textTime: {
+    color: theme['color-basic-600'],
+    marginTop: 5,
+  }
 }));
