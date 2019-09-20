@@ -1,4 +1,4 @@
-# Blueprint Template
+# CB Messaging Blueprint 
 
 This is a Messaging Blueprint.
 
