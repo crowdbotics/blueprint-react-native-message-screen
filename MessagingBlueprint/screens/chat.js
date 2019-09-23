@@ -130,9 +130,6 @@ export class _Chat extends React.Component {
   };
 
   render = () => {
-    console.log('Chat Render', '');
-
-    // return <Text />
     return(
     <KeyboardAwareScrollView
       style={this.props.themedStyle.container}
@@ -154,7 +151,7 @@ export class _Chat extends React.Component {
           onBlur={this.scrollToEnd}
           onChangeText={this.onInputChanged}
           value={this.state.message}
-          placeholder="Add a comment..."
+          placeholder="Type a text..."
           style={this.props.themedStyle.input}
 
         />
