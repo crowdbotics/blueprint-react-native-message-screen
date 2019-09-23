@@ -32,11 +32,11 @@ echo "copy"
 cp -r ./$BLUEPRINT/. $APP_NAME/src/features/$BLUEPRINT
 
 echo ">> insert 1" 
-sed -i '.bak' "s/${EXT_POINT_1}/&\\`echo -e '\n\r' ${DATA_1}`/g" $APP_NAME/src/config/installed_blueprints.js
+sed -i "s/${EXT_POINT_1}/&\n${DATA_1}/g" $APP_NAME/src/config/installed_blueprints.js
 
 
 echo ">> insert 2"
-sed -i '.bak' "s/${EXT_POINT_2}/&\\`echo -e '\n\r' ${DATA_2}`/g" $APP_NAME/src/navigator/mainNavigator.js
+sed -i "s/${EXT_POINT_2}/&\n${DATA_2}/g" $APP_NAME/src/navigator/mainNavigator.js
 
 echo ">> insert 3"
-sed -i '.bak' "s/${EXT_POINT_3}/&\\`echo -e '\n\r' ${DATA_3}`/g" $APP_NAME/src/navigator/mainNavigator.js
+sed -i "s/${EXT_POINT_3}/&\n${DATA_3}/g" $APP_NAME/src/navigator/mainNavigator.js
