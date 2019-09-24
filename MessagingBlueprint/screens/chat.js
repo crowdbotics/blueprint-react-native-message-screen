@@ -15,7 +15,7 @@ import {
   Avatar,
   withStyles,
 } from 'react-native-ui-kitten';
-import _ from 'lodash';
+import { delay } from 'lodash';
 import { FontAwesome } from '../../../assets/icons';
 import { data } from '../../../data';
 import { scale } from '../../../utils/scale';
@@ -63,7 +63,7 @@ export class _Chat extends React.Component {
     if (Platform.OS === 'ios') {
       this.listRef.scrollToEnd();
     } else {
-      _.delay(this.listRef.scrollToEnd, 100);
+      delay(this.listRef.scrollToEnd, 100);
     }
   };
 
@@ -153,7 +153,7 @@ export class _Chat extends React.Component {
           value={this.state.message}
           placeholder="Type a text..."
           style={this.props.themedStyle.input}
-
+          textStyle={this.props.themedStyle.text}
         />
         <TouchableOpacity onPress={this.onSendButtonPressed} style={this.props.themedStyle.send} >
           <Image source={require('../../../assets/icons/sendIcon.png')} />
@@ -235,6 +235,7 @@ export default Chat = withStyles(_Chat, theme => ({
     backgroundColor: theme['color-basic-100'],
     borderColor: theme['color-basic-400'],
     borderRadius: 25,
-    flex: 1
+    flex: 1,
+
   },
 }));

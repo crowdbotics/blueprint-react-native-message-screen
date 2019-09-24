@@ -1,10 +1,9 @@
 import React from 'react';
 import {FlatList, View, StyleSheet, TouchableOpacity} from 'react-native';
-import _ from 'lodash';
+import {filter} from 'lodash';
 import {withStyles, Text, Input, Avatar} from 'react-native-ui-kitten';
 import {data} from '../../../data';
 import NavigationType from '../../../config/navigation/propTypes';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const moment = require('moment');
 
@@ -26,9 +25,9 @@ export class _ChatList extends React.Component {
 
   extractItemKey = item => `${item.withUserId}`;
 
-  onInputChanged = event => {
-    const pattern = new RegExp(event.nativeEvent.text, 'i');
-    const chats = _.filter(this.state.data.original, chat => {
+  onInputChanged = text => {
+    const pattern = new RegExp(text, 'i');
+    const chats = filter(this.state.data.original, chat => {
       const filterResult = {
         firstName: chat.withUser.firstName.search(pattern),
         lastName: chat.withUser.lastName.search(pattern),
@@ -52,8 +51,6 @@ export class _ChatList extends React.Component {
 
   renderSeparator = () => <View style={this.props.themedStyle.separator} />;
 
-  renderInputLabel = () => <Icon name="search" size={20} color="#4F8EF7" />;
-
   renderHeader = () => (
     <View style={this.props.themedStyle.searchContainer}>
       <Input
@@ -61,8 +58,8 @@ export class _ChatList extends React.Component {
         autoCorrect={false}
         onChangeText={this.onInputChanged}
         placeholder="Search"
-        //icon={this.renderInputLabel}
         style={this.props.themedStyle.input}
+        textStyle={this.props.themedStyle.text}
       />
     </View>
   );
