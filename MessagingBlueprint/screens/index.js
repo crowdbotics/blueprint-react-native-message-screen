@@ -4,7 +4,7 @@ import {Text, Button} from 'react-native-ui-kitten';
 
 export default class Root extends PureComponent {
   static navigationOptions = {
-    title: 'Messaging Blueprint'.toUpperCase(),
+    title: 'Messenger'.toUpperCase(),
     headerBackTitle: null,
   };
 
@@ -12,21 +12,9 @@ export default class Root extends PureComponent {
     return (
       <View style={styles.container}>
         <Button
-          onPress={() => this.props.navigation.navigate('Chat')}
+          onPress={() => this.props.navigation.navigate('ChatScreen')}
           style={styles.item}>
-          Chat 
-        </Button>
-
-        <Button
-          onPress={() => this.props.navigation.navigate('ChatList')}
-          style={styles.item}>
-          Chat List 
-        </Button>
-
-        <Button
-          onPress={() => this.props.navigation.navigate('Comments')}
-          style={styles.item}>
-          Comments 
+          Chat Screen
         </Button>
 
         <Button
