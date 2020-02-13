@@ -4,7 +4,7 @@ import ChatScreen from "./screens/ChatScreen";
 import Home from "./screens/";
 
 
-export const MessengerNavigator = createStackNavigator(
+export default MessengerNavigator = createStackNavigator(
   {
     ChatScreen: { screen: ChatScreen },
     Home: { screen: Home },
