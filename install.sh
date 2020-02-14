@@ -16,13 +16,24 @@ source blueprint-lib/init.sh
 # APP_NAME is the name of the Django app that will be modified
 ##
 
-NAME="Messenger"
+BLUEPRINT="$3"
+NAME="$4"
+
+if [ -z "$BLUEPRINT" ]
+then
+    BLUEPRINT="Messenger"
+fi
+
+if [ -z "$NAME" ] 
+then
+    NAME="Messenger"
+fi
 
 EXT_POINT_1="@BlueprintInsertion"
 EXT_POINT_2="@BlueprintImportInsertion"
 EXT_POINT_3="@BlueprintNavigationInsertion"
 DATA_1="{ name: '${NAME}', human_name: '${NAME}', access_route: '${NAME}', icon: 'comments'},"
-DATA_2="import { ${NAME}Navigator } from '..\/features\/${NAME}\/navigator';"
+DATA_2="import ${NAME}Navigator from '..\/features\/${NAME}\/navigator';"
 DATA_3="${NAME}: { screen: ${NAME}Navigator },"
 
 echo "create blueprint folder"
